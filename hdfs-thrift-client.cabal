@@ -1,0 +1,30 @@
+name:                hdfs-thrift-client
+version:             0.1.0.0
+synopsis:            Initial project template from stack
+description:         Please see README.md
+homepage:            http://github.com/michaxm/haskell-hdfs-thrift-client#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2010 Author Here
+category:            Web
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src, src-gen-thrift
+  exposed-modules:     System.HDFS.HDFSClient
+  other-modules:       ThriftHadoopFileSystem_Iface, Hadoopfs_Types, ThriftHadoopFileSystem_Client
+                     , Hadoopfs_Consts, ThriftHadoopFileSystem
+
+  build-depends:       base >= 4.7 && < 5
+                     , thrift
+                     , network, bytestring, hashable, text, unordered-containers, vector
+                     , QuickCheck
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/michaxm/haskell-hdfs-thrift-client
