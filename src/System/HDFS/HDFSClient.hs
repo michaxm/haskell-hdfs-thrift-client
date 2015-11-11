@@ -1,4 +1,4 @@
-module System.HDFS.HDFSClient where
+module System.HDFS.HDFSClient (hdfsListFiles, hdfsReadCompleteFile) where
 
 import qualified Data.Text.Lazy as TL
 import Data.Vector (toList)
@@ -14,27 +14,30 @@ type Config = (String, Int)
 type Path = String
 
 {-
- List file names at path.
+ List file names at path. The HDFS will return full qualified file names including protocol, host and port.
+ For simplicity, these can be used for opening files etc without stripping, however you should not try to
+ construct these in the same form (just use a simple file path), since port and hostname are local knowledge
+ of the thrift server, strictly speaking.
 -}
 hdfsListFiles :: Config -> Path -> IO [String]
 hdfsListFiles config path = do
-  res <- withThriftChannels config (\channels -> C.listStatus channels (asHdfsPath path))
+  res <- withThriftChannels config (\channels -> C.listStatus channels (toThriftPath path))
   return $ map (TL.unpack . Types.fileStatus_path) (toList res)
 
 {-
  Read file content of path
   - throws an exception if path does not point at a regular file.
 -}
-hdfsReadFile :: Config -> Path -> IO TL.Text
-hdfsReadFile config path =
+hdfsReadCompleteFile :: Config -> Path -> IO TL.Text
+hdfsReadCompleteFile config path =
   withThriftChannels config (
-    \channels -> withThriftHandle channels (asHdfsPath path) (
+    \channels -> withThriftHandle channels (toThriftPath path) (
       \thriftHandle -> C.read channels thriftHandle 0 1000)) -- FIXME read more than 1 KB
 
--- helper utils, TODO defined module export list
+-- internals
 
-asHdfsPath :: String -> Types.Pathname
-asHdfsPath path = (Types.Pathname $ TL.pack $ "hdfs://"++path)
+toThriftPath :: String -> Types.Pathname
+toThriftPath = Types.Pathname . TL.pack
 
 type Channels = (BinaryProtocol GHC.Handle,
                  BinaryProtocol GHC.Handle) -- TODO generalize?
