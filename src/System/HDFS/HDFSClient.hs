@@ -1,5 +1,6 @@
 module System.HDFS.HDFSClient (hdfsListFiles, hdfsReadCompleteFile) where
 
+import Control.Exception (catch, SomeException)
 import qualified Data.Text.Lazy as TL
 import Data.Vector (toList)
 import qualified GHC.IO.Handle.Types as GHC
@@ -21,20 +22,29 @@ type Path = String
 -}
 hdfsListFiles :: Config -> Path -> IO [String]
 hdfsListFiles config path = do
-  res <- withThriftChannels config (\channels -> C.listStatus channels (toThriftPath path))
-  return $ map (TL.unpack . Types.fileStatus_path) (toList res)
+  res <- listStatus config path
+  return $ map (TL.unpack . Types.fileStatus_path) res
 
 {-
  Read file content of path
   - throws an exception if path does not point at a regular file.
 -}
 hdfsReadCompleteFile :: Config -> Path -> IO TL.Text
-hdfsReadCompleteFile config path =
-  withThriftChannels config (
-    \channels -> withThriftHandle channels (toThriftPath path) (
-      \thriftHandle -> C.read channels thriftHandle 0 1000)) -- FIXME read more than 1 KB
+hdfsReadCompleteFile config path = do
+  fileStatus <- listStatus config path
+  if length fileStatus /= 1
+    then error $ path ++ " is not a regular file: " ++ (show fileStatus)
+    else
+    withThriftChannels config (
+      \channels -> withThriftHandle channels (toThriftPath path) (
+        \thriftHandle -> C.read channels thriftHandle 0 (filesize $ head fileStatus)))
+    where
+      filesize = fromIntegral . Types.fileStatus_length -- TODO: Int64 is implicitly converted to Int32 here
 
 -- internals
+
+listStatus :: Config -> Path -> IO [Types.FileStatus]
+listStatus config path = withThriftChannels config (\channels -> C.listStatus channels (toThriftPath path)) >>= return . toList
 
 toThriftPath :: String -> Types.Pathname
 toThriftPath = Types.Pathname . TL.pack
@@ -44,10 +54,16 @@ type Channels = (BinaryProtocol GHC.Handle,
 
 withThriftChannels :: Config -> (Channels -> IO result) -> IO result
 withThriftChannels (host, port) action = do
-  handle <- H.hOpen (host, N.PortNumber (toEnum port))
+  handle <- openHandle host port
   res <- action (BinaryProtocol handle, BinaryProtocol handle)
   T.tClose handle
   return res
+
+openHandle :: String -> Int -> IO GHC.Handle
+openHandle host port = H.hOpen (host, N.PortNumber (toEnum port)) `catch` wrapException
+  where
+    wrapException :: SomeException -> a
+    wrapException e = error $ "Cannot connect to "++host++":"++(show port)++": "++(show e)
 
 withThriftHandle :: Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
 withThriftHandle channels hdfsPath action = do
