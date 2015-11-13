@@ -1,6 +1,7 @@
-module System.HDFS.HDFSClient (hdfsListFiles, hdfsReadCompleteFile) where
+module System.HDFS.HDFSClient (hdfsListFiles, hdfsReadCompleteFile, hdfsFileBlockLocations, hdfsFileDistribution) where
 
 import Control.Exception (catch, SomeException)
+import qualified Data.Int as I
 import qualified Data.Text.Lazy as TL
 import Data.Vector (toList)
 import qualified GHC.IO.Handle.Types as GHC
@@ -30,18 +31,40 @@ hdfsListFiles config path = do
   - throws an exception if path does not point at a regular file.
 -}
 hdfsReadCompleteFile :: Config -> Path -> IO TL.Text
-hdfsReadCompleteFile config path = do
+hdfsReadCompleteFile config path =
+  forRegularFilePath config path $ \thriftPath fileSize ->
+    withThriftChannels config (
+      \channels -> withThriftHandle channels thriftPath (
+        \thriftHandle -> C.read channels thriftHandle 0 (fromIntegral fileSize))) -- TODO: unchecked conversion Int64 to Int32
+
+{-
+ Get the data locations for a file
+  - throws an exception if path does not point at a regular file.
+-}
+hdfsFileBlockLocations :: Config -> Path -> IO [Types.BlockLocation]
+hdfsFileBlockLocations config path =
+  forRegularFilePath config path $ \thriftPath fileSize ->
+    withThriftChannels config (
+      \channels -> C.getFileBlockLocations channels thriftPath 0 fileSize >>= return . toList)
+
+hdfsFileDistribution :: Config -> Path -> IO [(String, Int)]
+hdfsFileDistribution config path = do
+  blockLocations <- hdfsFileBlockLocations config path
+  return $ groupCount (concat $ map hostNames blockLocations)
+    where
+      hostNames :: Types.BlockLocation -> [String]
+      hostNames = map TL.unpack . toList . Types.blockLocation_names
+
+-- internals
+
+forRegularFilePath :: Config -> Path -> (Types.Pathname -> I.Int64 -> IO a) -> IO a
+forRegularFilePath config path action = do
   fileStatus <- listStatus config path
   if length fileStatus /= 1
     then error $ path ++ " is not a regular file: " ++ (show fileStatus)
-    else
-    withThriftChannels config (
-      \channels -> withThriftHandle channels (toThriftPath path) (
-        \thriftHandle -> C.read channels thriftHandle 0 (filesize $ head fileStatus)))
+    else action (toThriftPath path) (filesize fileStatus)
     where
-      filesize = fromIntegral . Types.fileStatus_length -- TODO: Int64 is implicitly converted to Int32 here
-
--- internals
+      filesize = Types.fileStatus_length . head
 
 listStatus :: Config -> Path -> IO [Types.FileStatus]
 listStatus config path = withThriftChannels config (\channels -> C.listStatus channels (toThriftPath path)) >>= return . toList
@@ -69,5 +92,21 @@ withThriftHandle :: Channels -> Types.Pathname -> (Types.ThriftHandle -> IO resu
 withThriftHandle channels hdfsPath action = do
   thriftHandle <- C.open channels hdfsPath
   res <- action thriftHandle
-  C.close channels thriftHandle
+  _ <- C.close channels thriftHandle
   return res
+
+groupCount :: (Eq key) => [key] -> [(key, Int)]
+groupCount = foldr groupCount' []
+  where
+    groupCount' :: (Eq key) => key -> [(key, Int)] -> [(key, Int)]
+    groupCount' key [] = [(key, 1)]
+    groupCount' key (next:collected) = if (fst next == key) then (fst next, snd next +1):collected else next:(groupCount' key collected)
+
+{-
+updateOrInsert :: (Eq key) => (value -> value -> value) -> [(key, value)] -> (key, value) -> [(key, value)]
+updateOrInsert _ [] entry = [entry]
+updateOrInsert updater (next:rest) entry =
+  if (fst entry == fst next)
+  then (fst next, updater (snd next) (snd entry)):rest
+  else next:(updateOrInsert updater rest entry)
+-}
