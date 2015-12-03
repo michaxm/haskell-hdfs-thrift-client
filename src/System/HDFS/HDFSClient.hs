@@ -1,6 +1,12 @@
-module System.HDFS.HDFSClient (hdfsListFiles, hdfsReadCompleteFile, hdfsFileBlockLocations, hdfsFileDistribution) where
+module System.HDFS.HDFSClient (
+  hdfsListFiles,
+  hdfsReadCompleteFile,
+  hdfsFileBlockLocations, hdfsFileDistribution,
+  hdfsWriteNewFile
+  ) where
 
 import Control.Exception (catch, SomeException)
+import Data.Bool (bool)
 import qualified Data.Int as I
 import qualified Data.Text.Lazy as TL
 import Data.Vector (toList)
@@ -34,8 +40,9 @@ hdfsReadCompleteFile :: Config -> Path -> IO TL.Text
 hdfsReadCompleteFile config path =
   forRegularFilePath config path $ \thriftPath fileSize ->
     withThriftChannels config (
-      \channels -> withThriftHandle channels thriftPath (
-        \thriftHandle -> C.read channels thriftHandle 0 (fromIntegral fileSize))) -- TODO: unchecked conversion Int64 to Int32
+      \channels -> withThriftHandleForReading channels thriftPath (
+        \thriftHandle -> C.read channels thriftHandle 0 (fromIntegral fileSize) -- TODO: unchecked conversion Int64 to Int32
+        ))
 
 {-
  Get the data locations for a file
@@ -54,6 +61,13 @@ hdfsFileDistribution config path = do
     where
       hostNames :: Types.BlockLocation -> [String]
       hostNames = map TL.unpack . toList . Types.blockLocation_names
+
+hdfsWriteNewFile :: Config -> Path -> TL.Text -> IO ()
+hdfsWriteNewFile config path content =
+  withThriftChannels config (
+    \channels -> withThriftHandleForWriteNew channels (toThriftPath path) (
+      \thriftHandle -> C.write channels thriftHandle content >>= return . bool (error "unknown write handle") ()
+      ))
 
 -- internals
 
@@ -88,9 +102,15 @@ openHandle host port = H.hOpen (host, N.PortNumber (toEnum port)) `catch` wrapEx
     wrapException :: SomeException -> a
     wrapException e = error $ "Cannot connect to "++host++":"++(show port)++": "++(show e)
 
-withThriftHandle :: Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
-withThriftHandle channels hdfsPath action = do
-  thriftHandle <- C.open channels hdfsPath
+withThriftHandleForReading :: Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
+withThriftHandleForReading = withThriftHandle C.open
+
+withThriftHandleForWriteNew :: Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
+withThriftHandleForWriteNew = withThriftHandle C.create
+
+withThriftHandle :: (Channels -> Types.Pathname -> IO Types.ThriftHandle) -> Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
+withThriftHandle allocationMethod channels hdfsPath action = do
+  thriftHandle <- allocationMethod channels hdfsPath
   res <- action thriftHandle
   _ <- C.close channels thriftHandle
   return res
