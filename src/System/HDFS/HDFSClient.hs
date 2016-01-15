@@ -1,4 +1,5 @@
 module System.HDFS.HDFSClient (
+  Config,
   hdfsListFiles,
   hdfsReadCompleteFile,
   hdfsFileBlockLocations, hdfsFileDistribution,
@@ -21,21 +22,22 @@ import Thrift.Protocol.Binary (BinaryProtocol(..))
 type Config = (String, Int)
 type Path = String
 
-{-
+{-|
  List file names at path. The HDFS will return full qualified file names including protocol, host and port.
  For simplicity, these can be used for opening files etc without stripping, however you should not try to
  construct these in the same form (just use a simple file path), since port and hostname are local knowledge
  of the thrift server, strictly speaking.
--}
+|-}
 hdfsListFiles :: Config -> Path -> IO [String]
 hdfsListFiles config path = do
+  putStrLn $ "looking at " ++ path
   res <- listStatus config path
   return $ map (TL.unpack . Types.fileStatus_path) res
 
-{-
+{-|
  Read file content of path
   - throws an exception if path does not point at a regular file.
--}
+|-}
 hdfsReadCompleteFile :: Config -> Path -> IO TL.Text
 hdfsReadCompleteFile config path =
   forRegularFilePath config path $ \thriftPath fileSize ->
@@ -44,10 +46,10 @@ hdfsReadCompleteFile config path =
         \thriftHandle -> C.read channels thriftHandle 0 (fromIntegral fileSize) -- TODO: unchecked conversion Int64 to Int32
         ))
 
-{-
+{-|
  Get the data locations for a file
   - throws an exception if path does not point at a regular file.
--}
+|-}
 hdfsFileBlockLocations :: Config -> Path -> IO [Types.BlockLocation]
 hdfsFileBlockLocations config path =
   forRegularFilePath config path $ \thriftPath fileSize ->
