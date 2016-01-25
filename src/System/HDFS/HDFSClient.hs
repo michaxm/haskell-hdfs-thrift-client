@@ -41,7 +41,7 @@ hdfsListFiles config path = do
 hdfsReadCompleteFile :: Config -> Path -> IO TL.Text
 hdfsReadCompleteFile config path =
   forRegularFilePath config path $ \thriftPath fileSize ->
-    withThriftChannels config (
+    withThriftChannelsForRead config (
       \channels -> withThriftHandleForReading channels thriftPath (
         \thriftHandle -> C.read channels thriftHandle 0 (fromIntegral fileSize) -- TODO: unchecked conversion Int64 to Int32
         ))
@@ -53,7 +53,7 @@ hdfsReadCompleteFile config path =
 hdfsFileBlockLocations :: Config -> Path -> IO [Types.BlockLocation]
 hdfsFileBlockLocations config path =
   forRegularFilePath config path $ \thriftPath fileSize ->
-    withThriftChannels config (
+    withThriftChannelsForRead config (
       \channels -> C.getFileBlockLocations channels thriftPath 0 fileSize >>= return . toList)
 
 hdfsFileDistribution :: Config -> Path -> IO [(String, Int)]
@@ -66,7 +66,7 @@ hdfsFileDistribution config path = do
 
 hdfsWriteNewFile :: Config -> Path -> TL.Text -> IO ()
 hdfsWriteNewFile config path content =
-  withThriftChannels config (
+  withThriftChannelsForWrite config (
     \channels -> withThriftHandleForWriteNew channels (toThriftPath path) (
       \thriftHandle -> C.write channels thriftHandle content >>= return . bool (error "unknown write handle") ()
       ))
@@ -83,7 +83,7 @@ forRegularFilePath config path action = do
       filesize = Types.fileStatus_length . head
 
 listStatus :: Config -> Path -> IO [Types.FileStatus]
-listStatus config path = withThriftChannels config (\channels -> C.listStatus channels (toThriftPath path)) >>= return . toList
+listStatus config path = withThriftChannelsForRead config (\channels -> C.listStatus channels (toThriftPath path)) >>= return . toList
 
 toThriftPath :: String -> Types.Pathname
 toThriftPath = Types.Pathname . TL.pack
@@ -91,11 +91,19 @@ toThriftPath = Types.Pathname . TL.pack
 type Channels = (BinaryProtocol GHC.Handle,
                  BinaryProtocol GHC.Handle) -- TODO generalize?
 
-withThriftChannels :: Config -> (Channels -> IO result) -> IO result
-withThriftChannels (host, port) action = do
+withThriftChannelsForRead :: Config -> (Channels -> IO result) -> IO result
+withThriftChannelsForRead = withThriftChannels T.tClose
+
+withThriftChannelsForWrite :: Config -> (Channels -> IO result) -> IO result
+withThriftChannelsForWrite = withThriftChannels T.tClose
+
+type CloseHandleAction = (GHC.Handle -> IO ())
+
+withThriftChannels :: CloseHandleAction -> Config -> (Channels -> IO result) -> IO result
+withThriftChannels closeAction (host, port) action = do
   handle <- openHandle host port
   res <- action (BinaryProtocol handle, BinaryProtocol handle)
-  T.tClose handle
+  closeAction handle
   return res
 
 openHandle :: String -> Int -> IO GHC.Handle
@@ -105,16 +113,18 @@ openHandle host port = H.hOpen (host, N.PortNumber (toEnum port)) `catch` wrapEx
     wrapException e = error $ "Cannot connect to "++host++":"++(show port)++": "++(show e)
 
 withThriftHandleForReading :: Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
-withThriftHandleForReading = withThriftHandle C.open
+withThriftHandleForReading = withThriftHandle C.open C.closeReadHandle
 
 withThriftHandleForWriteNew :: Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
-withThriftHandleForWriteNew = withThriftHandle C.create
+withThriftHandleForWriteNew = withThriftHandle C.create C.closeWriteHandle
 
-withThriftHandle :: (Channels -> Types.Pathname -> IO Types.ThriftHandle) -> Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
-withThriftHandle allocationMethod channels hdfsPath action = do
+type CloseChannelAction = Channels -> Types.ThriftHandle -> IO Bool
+
+withThriftHandle :: (Channels -> Types.Pathname -> IO Types.ThriftHandle) -> CloseChannelAction -> Channels -> Types.Pathname -> (Types.ThriftHandle -> IO result) -> IO result
+withThriftHandle allocationMethod closeAction channels hdfsPath action = do
   thriftHandle <- allocationMethod channels hdfsPath
   res <- action thriftHandle
-  _ <- C.close channels thriftHandle
+  _ <- closeAction channels thriftHandle
   return res
 
 groupCount :: (Eq key) => [key] -> [(key, Int)]

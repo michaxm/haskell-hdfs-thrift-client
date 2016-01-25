@@ -49,7 +49,8 @@ class ThriftHadoopFileSystem_Iface a where
   append :: a -> Pathname -> P.IO ThriftHandle
   write :: a -> ThriftHandle -> LT.Text -> P.IO P.Bool
   read :: a -> ThriftHandle -> I.Int64 -> I.Int32 -> P.IO LT.Text
-  close :: a -> ThriftHandle -> P.IO P.Bool
+  closeReadHandle :: a -> ThriftHandle -> P.IO P.Bool
+  closeWriteHandle :: a -> ThriftHandle -> P.IO P.Bool
   rm :: a -> Pathname -> P.Bool -> P.IO P.Bool
   rename :: a -> Pathname -> Pathname -> P.IO P.Bool
   mkdirs :: a -> Pathname -> P.IO P.Bool

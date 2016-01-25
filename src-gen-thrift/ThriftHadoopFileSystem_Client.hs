@@ -13,7 +13,7 @@
 -- DO NOT EDIT UNLESS YOU ARE SURE YOU KNOW WHAT YOU ARE DOING --
 -----------------------------------------------------------------
 
-module ThriftHadoopFileSystem_Client(setInactivityTimeoutPeriod,shutdown,create,createFile,open,append,write,read,close,rm,rename,mkdirs,exists,stat,listStatus,chmod,chown,setReplication,getFileBlockLocations) where
+module ThriftHadoopFileSystem_Client(setInactivityTimeoutPeriod,shutdown,create,createFile,open,append,write,read,closeReadHandle,closeWriteHandle,rm,rename,mkdirs,exists,stat,listStatus,chmod,chown,setReplication,getFileBlockLocations) where
 import qualified Data.IORef as R
 import Prelude (($), (.), (>>=), (==), (++))
 import qualified Prelude as P
@@ -176,23 +176,40 @@ recv_read ip = do
   T.readMessageEnd ip
   P.maybe (P.return ()) X.throw (read_result_ouch res)
   P.return $ read_result_success res
-close (ip,op) arg_out = do
-  send_close op arg_out
-  recv_close ip
-send_close op arg_out = do
+closeReadHandle (ip,op) arg_out = do
+  send_closeReadHandle op arg_out
+  recv_closeReadHandle ip
+send_closeReadHandle op arg_out = do
   seq <- seqid
   seqn <- R.readIORef seq
-  T.writeMessageBegin op ("close", T.M_CALL, seqn)
-  write_Close_args op (Close_args{close_args_out=arg_out})
+  T.writeMessageBegin op ("closeReadHandle", T.M_CALL, seqn)
+  write_CloseReadHandle_args op (CloseReadHandle_args{closeReadHandle_args_out=arg_out})
   T.writeMessageEnd op
   T.tFlush (T.getTransport op)
-recv_close ip = do
+recv_closeReadHandle ip = do
   (fname, mtype, rseqid) <- T.readMessageBegin ip
   M.when (mtype == T.M_EXCEPTION) $ do { exn <- T.readAppExn ip ; T.readMessageEnd ip ; X.throw exn }
-  res <- read_Close_result ip
+  res <- read_CloseReadHandle_result ip
   T.readMessageEnd ip
-  P.maybe (P.return ()) X.throw (close_result_ouch res)
-  P.return $ close_result_success res
+  P.maybe (P.return ()) X.throw (closeReadHandle_result_ouch res)
+  P.return $ closeReadHandle_result_success res
+closeWriteHandle (ip,op) arg_out = do
+  send_closeWriteHandle op arg_out
+  recv_closeWriteHandle ip
+send_closeWriteHandle op arg_out = do
+  seq <- seqid
+  seqn <- R.readIORef seq
+  T.writeMessageBegin op ("closeWriteHandle", T.M_CALL, seqn)
+  write_CloseWriteHandle_args op (CloseWriteHandle_args{closeWriteHandle_args_out=arg_out})
+  T.writeMessageEnd op
+  T.tFlush (T.getTransport op)
+recv_closeWriteHandle ip = do
+  (fname, mtype, rseqid) <- T.readMessageBegin ip
+  M.when (mtype == T.M_EXCEPTION) $ do { exn <- T.readAppExn ip ; T.readMessageEnd ip ; X.throw exn }
+  res <- read_CloseWriteHandle_result ip
+  T.readMessageEnd ip
+  P.maybe (P.return ()) X.throw (closeWriteHandle_result_ouch res)
+  P.return $ closeWriteHandle_result_success res
 rm (ip,op) arg_path arg_recursive = do
   send_rm op arg_path arg_recursive
   recv_rm ip

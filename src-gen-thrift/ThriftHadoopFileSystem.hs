@@ -644,79 +644,152 @@ default_Read_result :: Read_result
 default_Read_result = Read_result{
   read_result_success = "",
   read_result_ouch = P.Nothing}
-data Close_args = Close_args  { close_args_out :: ThriftHandle
+data CloseReadHandle_args = CloseReadHandle_args  { closeReadHandle_args_out :: ThriftHandle
   } deriving (P.Show,P.Eq,G.Generic,TY.Typeable)
-instance H.Hashable Close_args where
-  hashWithSalt salt record = salt   `H.hashWithSalt` close_args_out record  
-instance QC.Arbitrary Close_args where 
-  arbitrary = M.liftM Close_args (QC.arbitrary)
-  shrink obj | obj == default_Close_args = []
+instance H.Hashable CloseReadHandle_args where
+  hashWithSalt salt record = salt   `H.hashWithSalt` closeReadHandle_args_out record  
+instance QC.Arbitrary CloseReadHandle_args where 
+  arbitrary = M.liftM CloseReadHandle_args (QC.arbitrary)
+  shrink obj | obj == default_CloseReadHandle_args = []
              | P.otherwise = M.catMaybes
-    [ if obj == default_Close_args{close_args_out = close_args_out obj} then P.Nothing else P.Just $ default_Close_args{close_args_out = close_args_out obj}
+    [ if obj == default_CloseReadHandle_args{closeReadHandle_args_out = closeReadHandle_args_out obj} then P.Nothing else P.Just $ default_CloseReadHandle_args{closeReadHandle_args_out = closeReadHandle_args_out obj}
     ]
-from_Close_args :: Close_args -> T.ThriftVal
-from_Close_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v165 -> P.Just (1, ("out",from_ThriftHandle _v165))) $ close_args_out record
+from_CloseReadHandle_args :: CloseReadHandle_args -> T.ThriftVal
+from_CloseReadHandle_args record = T.TStruct $ Map.fromList $ M.catMaybes
+  [ (\_v165 -> P.Just (1, ("out",from_ThriftHandle _v165))) $ closeReadHandle_args_out record
   ]
-write_Close_args :: (T.Protocol p, T.Transport t) => p t -> Close_args -> P.IO ()
-write_Close_args oprot record = T.writeVal oprot $ from_Close_args record
-encode_Close_args :: (T.Protocol p, T.Transport t) => p t -> Close_args -> LBS.ByteString
-encode_Close_args oprot record = T.serializeVal oprot $ from_Close_args record
-to_Close_args :: T.ThriftVal -> Close_args
-to_Close_args (T.TStruct fields) = Close_args{
-  close_args_out = P.maybe (close_args_out default_Close_args) (\(_,_val167) -> (case _val167 of {T.TStruct _val168 -> (to_ThriftHandle (T.TStruct _val168)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+write_CloseReadHandle_args :: (T.Protocol p, T.Transport t) => p t -> CloseReadHandle_args -> P.IO ()
+write_CloseReadHandle_args oprot record = T.writeVal oprot $ from_CloseReadHandle_args record
+encode_CloseReadHandle_args :: (T.Protocol p, T.Transport t) => p t -> CloseReadHandle_args -> LBS.ByteString
+encode_CloseReadHandle_args oprot record = T.serializeVal oprot $ from_CloseReadHandle_args record
+to_CloseReadHandle_args :: T.ThriftVal -> CloseReadHandle_args
+to_CloseReadHandle_args (T.TStruct fields) = CloseReadHandle_args{
+  closeReadHandle_args_out = P.maybe (closeReadHandle_args_out default_CloseReadHandle_args) (\(_,_val167) -> (case _val167 of {T.TStruct _val168 -> (to_ThriftHandle (T.TStruct _val168)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
-to_Close_args _ = P.error "not a struct"
-read_Close_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Close_args
-read_Close_args iprot = to_Close_args <$> T.readVal iprot (T.T_STRUCT typemap_Close_args)
-decode_Close_args :: (T.Protocol p, T.Transport t) => p t -> LBS.ByteString -> Close_args
-decode_Close_args iprot bs = to_Close_args $ T.deserializeVal iprot (T.T_STRUCT typemap_Close_args) bs
-typemap_Close_args :: T.TypeMap
-typemap_Close_args = Map.fromList [(1,("out",(T.T_STRUCT typemap_ThriftHandle)))]
-default_Close_args :: Close_args
-default_Close_args = Close_args{
-  close_args_out = default_ThriftHandle}
-data Close_result = Close_result  { close_result_success :: P.Bool
-  , close_result_ouch :: P.Maybe ThriftIOException
+to_CloseReadHandle_args _ = P.error "not a struct"
+read_CloseReadHandle_args :: (T.Transport t, T.Protocol p) => p t -> P.IO CloseReadHandle_args
+read_CloseReadHandle_args iprot = to_CloseReadHandle_args <$> T.readVal iprot (T.T_STRUCT typemap_CloseReadHandle_args)
+decode_CloseReadHandle_args :: (T.Protocol p, T.Transport t) => p t -> LBS.ByteString -> CloseReadHandle_args
+decode_CloseReadHandle_args iprot bs = to_CloseReadHandle_args $ T.deserializeVal iprot (T.T_STRUCT typemap_CloseReadHandle_args) bs
+typemap_CloseReadHandle_args :: T.TypeMap
+typemap_CloseReadHandle_args = Map.fromList [(1,("out",(T.T_STRUCT typemap_ThriftHandle)))]
+default_CloseReadHandle_args :: CloseReadHandle_args
+default_CloseReadHandle_args = CloseReadHandle_args{
+  closeReadHandle_args_out = default_ThriftHandle}
+data CloseReadHandle_result = CloseReadHandle_result  { closeReadHandle_result_success :: P.Bool
+  , closeReadHandle_result_ouch :: P.Maybe ThriftIOException
   } deriving (P.Show,P.Eq,G.Generic,TY.Typeable)
-instance H.Hashable Close_result where
-  hashWithSalt salt record = salt   `H.hashWithSalt` close_result_success record   `H.hashWithSalt` close_result_ouch record  
-instance QC.Arbitrary Close_result where 
-  arbitrary = M.liftM Close_result (QC.arbitrary)
+instance H.Hashable CloseReadHandle_result where
+  hashWithSalt salt record = salt   `H.hashWithSalt` closeReadHandle_result_success record   `H.hashWithSalt` closeReadHandle_result_ouch record  
+instance QC.Arbitrary CloseReadHandle_result where 
+  arbitrary = M.liftM CloseReadHandle_result (QC.arbitrary)
           `M.ap`(M.liftM P.Just QC.arbitrary)
-  shrink obj | obj == default_Close_result = []
+  shrink obj | obj == default_CloseReadHandle_result = []
              | P.otherwise = M.catMaybes
-    [ if obj == default_Close_result{close_result_success = close_result_success obj} then P.Nothing else P.Just $ default_Close_result{close_result_success = close_result_success obj}
-    , if obj == default_Close_result{close_result_ouch = close_result_ouch obj} then P.Nothing else P.Just $ default_Close_result{close_result_ouch = close_result_ouch obj}
+    [ if obj == default_CloseReadHandle_result{closeReadHandle_result_success = closeReadHandle_result_success obj} then P.Nothing else P.Just $ default_CloseReadHandle_result{closeReadHandle_result_success = closeReadHandle_result_success obj}
+    , if obj == default_CloseReadHandle_result{closeReadHandle_result_ouch = closeReadHandle_result_ouch obj} then P.Nothing else P.Just $ default_CloseReadHandle_result{closeReadHandle_result_ouch = closeReadHandle_result_ouch obj}
     ]
-from_Close_result :: Close_result -> T.ThriftVal
-from_Close_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v171 -> (1, ("ouch",from_ThriftIOException _v171))) <$> close_result_ouch record]
+from_CloseReadHandle_result :: CloseReadHandle_result -> T.ThriftVal
+from_CloseReadHandle_result record = T.TStruct $ Map.fromList 
+  (let exns = M.catMaybes [ (\_v171 -> (1, ("ouch",from_ThriftIOException _v171))) <$> closeReadHandle_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v171 -> P.Just (0, ("success",T.TBool _v171))) $ close_result_success record
-    , (\_v171 -> (1, ("ouch",from_ThriftIOException _v171))) <$> close_result_ouch record
+    [ (\_v171 -> P.Just (0, ("success",T.TBool _v171))) $ closeReadHandle_result_success record
+    , (\_v171 -> (1, ("ouch",from_ThriftIOException _v171))) <$> closeReadHandle_result_ouch record
     ]
     )
-write_Close_result :: (T.Protocol p, T.Transport t) => p t -> Close_result -> P.IO ()
-write_Close_result oprot record = T.writeVal oprot $ from_Close_result record
-encode_Close_result :: (T.Protocol p, T.Transport t) => p t -> Close_result -> LBS.ByteString
-encode_Close_result oprot record = T.serializeVal oprot $ from_Close_result record
-to_Close_result :: T.ThriftVal -> Close_result
-to_Close_result (T.TStruct fields) = Close_result{
-  close_result_success = P.maybe (close_result_success default_Close_result) (\(_,_val173) -> (case _val173 of {T.TBool _val174 -> _val174; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  close_result_ouch = P.maybe (P.Nothing) (\(_,_val173) -> P.Just (case _val173 of {T.TStruct _val175 -> (to_ThriftIOException (T.TStruct _val175)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+write_CloseReadHandle_result :: (T.Protocol p, T.Transport t) => p t -> CloseReadHandle_result -> P.IO ()
+write_CloseReadHandle_result oprot record = T.writeVal oprot $ from_CloseReadHandle_result record
+encode_CloseReadHandle_result :: (T.Protocol p, T.Transport t) => p t -> CloseReadHandle_result -> LBS.ByteString
+encode_CloseReadHandle_result oprot record = T.serializeVal oprot $ from_CloseReadHandle_result record
+to_CloseReadHandle_result :: T.ThriftVal -> CloseReadHandle_result
+to_CloseReadHandle_result (T.TStruct fields) = CloseReadHandle_result{
+  closeReadHandle_result_success = P.maybe (closeReadHandle_result_success default_CloseReadHandle_result) (\(_,_val173) -> (case _val173 of {T.TBool _val174 -> _val174; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  closeReadHandle_result_ouch = P.maybe (P.Nothing) (\(_,_val173) -> P.Just (case _val173 of {T.TStruct _val175 -> (to_ThriftIOException (T.TStruct _val175)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
-to_Close_result _ = P.error "not a struct"
-read_Close_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Close_result
-read_Close_result iprot = to_Close_result <$> T.readVal iprot (T.T_STRUCT typemap_Close_result)
-decode_Close_result :: (T.Protocol p, T.Transport t) => p t -> LBS.ByteString -> Close_result
-decode_Close_result iprot bs = to_Close_result $ T.deserializeVal iprot (T.T_STRUCT typemap_Close_result) bs
-typemap_Close_result :: T.TypeMap
-typemap_Close_result = Map.fromList [(0,("success",T.T_BOOL)),(1,("ouch",(T.T_STRUCT typemap_ThriftIOException)))]
-default_Close_result :: Close_result
-default_Close_result = Close_result{
-  close_result_success = P.False,
-  close_result_ouch = P.Nothing}
+to_CloseReadHandle_result _ = P.error "not a struct"
+read_CloseReadHandle_result :: (T.Transport t, T.Protocol p) => p t -> P.IO CloseReadHandle_result
+read_CloseReadHandle_result iprot = to_CloseReadHandle_result <$> T.readVal iprot (T.T_STRUCT typemap_CloseReadHandle_result)
+decode_CloseReadHandle_result :: (T.Protocol p, T.Transport t) => p t -> LBS.ByteString -> CloseReadHandle_result
+decode_CloseReadHandle_result iprot bs = to_CloseReadHandle_result $ T.deserializeVal iprot (T.T_STRUCT typemap_CloseReadHandle_result) bs
+typemap_CloseReadHandle_result :: T.TypeMap
+typemap_CloseReadHandle_result = Map.fromList [(0,("success",T.T_BOOL)),(1,("ouch",(T.T_STRUCT typemap_ThriftIOException)))]
+default_CloseReadHandle_result :: CloseReadHandle_result
+default_CloseReadHandle_result = CloseReadHandle_result{
+  closeReadHandle_result_success = P.False,
+  closeReadHandle_result_ouch = P.Nothing}
+data CloseWriteHandle_args = CloseWriteHandle_args  { closeWriteHandle_args_out :: ThriftHandle
+  } deriving (P.Show,P.Eq,G.Generic,TY.Typeable)
+instance H.Hashable CloseWriteHandle_args where
+  hashWithSalt salt record = salt   `H.hashWithSalt` closeWriteHandle_args_out record  
+instance QC.Arbitrary CloseWriteHandle_args where 
+  arbitrary = M.liftM CloseWriteHandle_args (QC.arbitrary)
+  shrink obj | obj == default_CloseWriteHandle_args = []
+             | P.otherwise = M.catMaybes
+    [ if obj == default_CloseWriteHandle_args{closeWriteHandle_args_out = closeWriteHandle_args_out obj} then P.Nothing else P.Just $ default_CloseWriteHandle_args{closeWriteHandle_args_out = closeWriteHandle_args_out obj}
+    ]
+from_CloseWriteHandle_args :: CloseWriteHandle_args -> T.ThriftVal
+from_CloseWriteHandle_args record = T.TStruct $ Map.fromList $ M.catMaybes
+  [ (\_v178 -> P.Just (1, ("out",from_ThriftHandle _v178))) $ closeWriteHandle_args_out record
+  ]
+write_CloseWriteHandle_args :: (T.Protocol p, T.Transport t) => p t -> CloseWriteHandle_args -> P.IO ()
+write_CloseWriteHandle_args oprot record = T.writeVal oprot $ from_CloseWriteHandle_args record
+encode_CloseWriteHandle_args :: (T.Protocol p, T.Transport t) => p t -> CloseWriteHandle_args -> LBS.ByteString
+encode_CloseWriteHandle_args oprot record = T.serializeVal oprot $ from_CloseWriteHandle_args record
+to_CloseWriteHandle_args :: T.ThriftVal -> CloseWriteHandle_args
+to_CloseWriteHandle_args (T.TStruct fields) = CloseWriteHandle_args{
+  closeWriteHandle_args_out = P.maybe (closeWriteHandle_args_out default_CloseWriteHandle_args) (\(_,_val180) -> (case _val180 of {T.TStruct _val181 -> (to_ThriftHandle (T.TStruct _val181)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  }
+to_CloseWriteHandle_args _ = P.error "not a struct"
+read_CloseWriteHandle_args :: (T.Transport t, T.Protocol p) => p t -> P.IO CloseWriteHandle_args
+read_CloseWriteHandle_args iprot = to_CloseWriteHandle_args <$> T.readVal iprot (T.T_STRUCT typemap_CloseWriteHandle_args)
+decode_CloseWriteHandle_args :: (T.Protocol p, T.Transport t) => p t -> LBS.ByteString -> CloseWriteHandle_args
+decode_CloseWriteHandle_args iprot bs = to_CloseWriteHandle_args $ T.deserializeVal iprot (T.T_STRUCT typemap_CloseWriteHandle_args) bs
+typemap_CloseWriteHandle_args :: T.TypeMap
+typemap_CloseWriteHandle_args = Map.fromList [(1,("out",(T.T_STRUCT typemap_ThriftHandle)))]
+default_CloseWriteHandle_args :: CloseWriteHandle_args
+default_CloseWriteHandle_args = CloseWriteHandle_args{
+  closeWriteHandle_args_out = default_ThriftHandle}
+data CloseWriteHandle_result = CloseWriteHandle_result  { closeWriteHandle_result_success :: P.Bool
+  , closeWriteHandle_result_ouch :: P.Maybe ThriftIOException
+  } deriving (P.Show,P.Eq,G.Generic,TY.Typeable)
+instance H.Hashable CloseWriteHandle_result where
+  hashWithSalt salt record = salt   `H.hashWithSalt` closeWriteHandle_result_success record   `H.hashWithSalt` closeWriteHandle_result_ouch record  
+instance QC.Arbitrary CloseWriteHandle_result where 
+  arbitrary = M.liftM CloseWriteHandle_result (QC.arbitrary)
+          `M.ap`(M.liftM P.Just QC.arbitrary)
+  shrink obj | obj == default_CloseWriteHandle_result = []
+             | P.otherwise = M.catMaybes
+    [ if obj == default_CloseWriteHandle_result{closeWriteHandle_result_success = closeWriteHandle_result_success obj} then P.Nothing else P.Just $ default_CloseWriteHandle_result{closeWriteHandle_result_success = closeWriteHandle_result_success obj}
+    , if obj == default_CloseWriteHandle_result{closeWriteHandle_result_ouch = closeWriteHandle_result_ouch obj} then P.Nothing else P.Just $ default_CloseWriteHandle_result{closeWriteHandle_result_ouch = closeWriteHandle_result_ouch obj}
+    ]
+from_CloseWriteHandle_result :: CloseWriteHandle_result -> T.ThriftVal
+from_CloseWriteHandle_result record = T.TStruct $ Map.fromList 
+  (let exns = M.catMaybes [ (\_v184 -> (1, ("ouch",from_ThriftIOException _v184))) <$> closeWriteHandle_result_ouch record]
+  in if P.not (P.null exns) then exns else M.catMaybes
+    [ (\_v184 -> P.Just (0, ("success",T.TBool _v184))) $ closeWriteHandle_result_success record
+    , (\_v184 -> (1, ("ouch",from_ThriftIOException _v184))) <$> closeWriteHandle_result_ouch record
+    ]
+    )
+write_CloseWriteHandle_result :: (T.Protocol p, T.Transport t) => p t -> CloseWriteHandle_result -> P.IO ()
+write_CloseWriteHandle_result oprot record = T.writeVal oprot $ from_CloseWriteHandle_result record
+encode_CloseWriteHandle_result :: (T.Protocol p, T.Transport t) => p t -> CloseWriteHandle_result -> LBS.ByteString
+encode_CloseWriteHandle_result oprot record = T.serializeVal oprot $ from_CloseWriteHandle_result record
+to_CloseWriteHandle_result :: T.ThriftVal -> CloseWriteHandle_result
+to_CloseWriteHandle_result (T.TStruct fields) = CloseWriteHandle_result{
+  closeWriteHandle_result_success = P.maybe (closeWriteHandle_result_success default_CloseWriteHandle_result) (\(_,_val186) -> (case _val186 of {T.TBool _val187 -> _val187; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  closeWriteHandle_result_ouch = P.maybe (P.Nothing) (\(_,_val186) -> P.Just (case _val186 of {T.TStruct _val188 -> (to_ThriftIOException (T.TStruct _val188)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  }
+to_CloseWriteHandle_result _ = P.error "not a struct"
+read_CloseWriteHandle_result :: (T.Transport t, T.Protocol p) => p t -> P.IO CloseWriteHandle_result
+read_CloseWriteHandle_result iprot = to_CloseWriteHandle_result <$> T.readVal iprot (T.T_STRUCT typemap_CloseWriteHandle_result)
+decode_CloseWriteHandle_result :: (T.Protocol p, T.Transport t) => p t -> LBS.ByteString -> CloseWriteHandle_result
+decode_CloseWriteHandle_result iprot bs = to_CloseWriteHandle_result $ T.deserializeVal iprot (T.T_STRUCT typemap_CloseWriteHandle_result) bs
+typemap_CloseWriteHandle_result :: T.TypeMap
+typemap_CloseWriteHandle_result = Map.fromList [(0,("success",T.T_BOOL)),(1,("ouch",(T.T_STRUCT typemap_ThriftIOException)))]
+default_CloseWriteHandle_result :: CloseWriteHandle_result
+default_CloseWriteHandle_result = CloseWriteHandle_result{
+  closeWriteHandle_result_success = P.False,
+  closeWriteHandle_result_ouch = P.Nothing}
 data Rm_args = Rm_args  { rm_args_path :: Pathname
   , rm_args_recursive :: P.Bool
   } deriving (P.Show,P.Eq,G.Generic,TY.Typeable)
@@ -732,8 +805,8 @@ instance QC.Arbitrary Rm_args where
     ]
 from_Rm_args :: Rm_args -> T.ThriftVal
 from_Rm_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v178 -> P.Just (1, ("path",from_Pathname _v178))) $ rm_args_path record
-  , (\_v178 -> P.Just (2, ("recursive",T.TBool _v178))) $ rm_args_recursive record
+  [ (\_v191 -> P.Just (1, ("path",from_Pathname _v191))) $ rm_args_path record
+  , (\_v191 -> P.Just (2, ("recursive",T.TBool _v191))) $ rm_args_recursive record
   ]
 write_Rm_args :: (T.Protocol p, T.Transport t) => p t -> Rm_args -> P.IO ()
 write_Rm_args oprot record = T.writeVal oprot $ from_Rm_args record
@@ -741,8 +814,8 @@ encode_Rm_args :: (T.Protocol p, T.Transport t) => p t -> Rm_args -> LBS.ByteStr
 encode_Rm_args oprot record = T.serializeVal oprot $ from_Rm_args record
 to_Rm_args :: T.ThriftVal -> Rm_args
 to_Rm_args (T.TStruct fields) = Rm_args{
-  rm_args_path = P.maybe (rm_args_path default_Rm_args) (\(_,_val180) -> (case _val180 of {T.TStruct _val181 -> (to_Pathname (T.TStruct _val181)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
-  rm_args_recursive = P.maybe (rm_args_recursive default_Rm_args) (\(_,_val180) -> (case _val180 of {T.TBool _val182 -> _val182; _ -> P.error "wrong type"})) (Map.lookup (2) fields)
+  rm_args_path = P.maybe (rm_args_path default_Rm_args) (\(_,_val193) -> (case _val193 of {T.TStruct _val194 -> (to_Pathname (T.TStruct _val194)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
+  rm_args_recursive = P.maybe (rm_args_recursive default_Rm_args) (\(_,_val193) -> (case _val193 of {T.TBool _val195 -> _val195; _ -> P.error "wrong type"})) (Map.lookup (2) fields)
   }
 to_Rm_args _ = P.error "not a struct"
 read_Rm_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Rm_args
@@ -770,10 +843,10 @@ instance QC.Arbitrary Rm_result where
     ]
 from_Rm_result :: Rm_result -> T.ThriftVal
 from_Rm_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v185 -> (1, ("ouch",from_ThriftIOException _v185))) <$> rm_result_ouch record]
+  (let exns = M.catMaybes [ (\_v198 -> (1, ("ouch",from_ThriftIOException _v198))) <$> rm_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v185 -> P.Just (0, ("success",T.TBool _v185))) $ rm_result_success record
-    , (\_v185 -> (1, ("ouch",from_ThriftIOException _v185))) <$> rm_result_ouch record
+    [ (\_v198 -> P.Just (0, ("success",T.TBool _v198))) $ rm_result_success record
+    , (\_v198 -> (1, ("ouch",from_ThriftIOException _v198))) <$> rm_result_ouch record
     ]
     )
 write_Rm_result :: (T.Protocol p, T.Transport t) => p t -> Rm_result -> P.IO ()
@@ -782,8 +855,8 @@ encode_Rm_result :: (T.Protocol p, T.Transport t) => p t -> Rm_result -> LBS.Byt
 encode_Rm_result oprot record = T.serializeVal oprot $ from_Rm_result record
 to_Rm_result :: T.ThriftVal -> Rm_result
 to_Rm_result (T.TStruct fields) = Rm_result{
-  rm_result_success = P.maybe (rm_result_success default_Rm_result) (\(_,_val187) -> (case _val187 of {T.TBool _val188 -> _val188; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  rm_result_ouch = P.maybe (P.Nothing) (\(_,_val187) -> P.Just (case _val187 of {T.TStruct _val189 -> (to_ThriftIOException (T.TStruct _val189)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  rm_result_success = P.maybe (rm_result_success default_Rm_result) (\(_,_val200) -> (case _val200 of {T.TBool _val201 -> _val201; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  rm_result_ouch = P.maybe (P.Nothing) (\(_,_val200) -> P.Just (case _val200 of {T.TStruct _val202 -> (to_ThriftIOException (T.TStruct _val202)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Rm_result _ = P.error "not a struct"
 read_Rm_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Rm_result
@@ -811,8 +884,8 @@ instance QC.Arbitrary Rename_args where
     ]
 from_Rename_args :: Rename_args -> T.ThriftVal
 from_Rename_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v192 -> P.Just (1, ("path",from_Pathname _v192))) $ rename_args_path record
-  , (\_v192 -> P.Just (2, ("dest",from_Pathname _v192))) $ rename_args_dest record
+  [ (\_v205 -> P.Just (1, ("path",from_Pathname _v205))) $ rename_args_path record
+  , (\_v205 -> P.Just (2, ("dest",from_Pathname _v205))) $ rename_args_dest record
   ]
 write_Rename_args :: (T.Protocol p, T.Transport t) => p t -> Rename_args -> P.IO ()
 write_Rename_args oprot record = T.writeVal oprot $ from_Rename_args record
@@ -820,8 +893,8 @@ encode_Rename_args :: (T.Protocol p, T.Transport t) => p t -> Rename_args -> LBS
 encode_Rename_args oprot record = T.serializeVal oprot $ from_Rename_args record
 to_Rename_args :: T.ThriftVal -> Rename_args
 to_Rename_args (T.TStruct fields) = Rename_args{
-  rename_args_path = P.maybe (rename_args_path default_Rename_args) (\(_,_val194) -> (case _val194 of {T.TStruct _val195 -> (to_Pathname (T.TStruct _val195)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
-  rename_args_dest = P.maybe (rename_args_dest default_Rename_args) (\(_,_val194) -> (case _val194 of {T.TStruct _val196 -> (to_Pathname (T.TStruct _val196)); _ -> P.error "wrong type"})) (Map.lookup (2) fields)
+  rename_args_path = P.maybe (rename_args_path default_Rename_args) (\(_,_val207) -> (case _val207 of {T.TStruct _val208 -> (to_Pathname (T.TStruct _val208)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
+  rename_args_dest = P.maybe (rename_args_dest default_Rename_args) (\(_,_val207) -> (case _val207 of {T.TStruct _val209 -> (to_Pathname (T.TStruct _val209)); _ -> P.error "wrong type"})) (Map.lookup (2) fields)
   }
 to_Rename_args _ = P.error "not a struct"
 read_Rename_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Rename_args
@@ -849,10 +922,10 @@ instance QC.Arbitrary Rename_result where
     ]
 from_Rename_result :: Rename_result -> T.ThriftVal
 from_Rename_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v199 -> (1, ("ouch",from_ThriftIOException _v199))) <$> rename_result_ouch record]
+  (let exns = M.catMaybes [ (\_v212 -> (1, ("ouch",from_ThriftIOException _v212))) <$> rename_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v199 -> P.Just (0, ("success",T.TBool _v199))) $ rename_result_success record
-    , (\_v199 -> (1, ("ouch",from_ThriftIOException _v199))) <$> rename_result_ouch record
+    [ (\_v212 -> P.Just (0, ("success",T.TBool _v212))) $ rename_result_success record
+    , (\_v212 -> (1, ("ouch",from_ThriftIOException _v212))) <$> rename_result_ouch record
     ]
     )
 write_Rename_result :: (T.Protocol p, T.Transport t) => p t -> Rename_result -> P.IO ()
@@ -861,8 +934,8 @@ encode_Rename_result :: (T.Protocol p, T.Transport t) => p t -> Rename_result ->
 encode_Rename_result oprot record = T.serializeVal oprot $ from_Rename_result record
 to_Rename_result :: T.ThriftVal -> Rename_result
 to_Rename_result (T.TStruct fields) = Rename_result{
-  rename_result_success = P.maybe (rename_result_success default_Rename_result) (\(_,_val201) -> (case _val201 of {T.TBool _val202 -> _val202; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  rename_result_ouch = P.maybe (P.Nothing) (\(_,_val201) -> P.Just (case _val201 of {T.TStruct _val203 -> (to_ThriftIOException (T.TStruct _val203)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  rename_result_success = P.maybe (rename_result_success default_Rename_result) (\(_,_val214) -> (case _val214 of {T.TBool _val215 -> _val215; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  rename_result_ouch = P.maybe (P.Nothing) (\(_,_val214) -> P.Just (case _val214 of {T.TStruct _val216 -> (to_ThriftIOException (T.TStruct _val216)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Rename_result _ = P.error "not a struct"
 read_Rename_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Rename_result
@@ -887,7 +960,7 @@ instance QC.Arbitrary Mkdirs_args where
     ]
 from_Mkdirs_args :: Mkdirs_args -> T.ThriftVal
 from_Mkdirs_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v206 -> P.Just (1, ("path",from_Pathname _v206))) $ mkdirs_args_path record
+  [ (\_v219 -> P.Just (1, ("path",from_Pathname _v219))) $ mkdirs_args_path record
   ]
 write_Mkdirs_args :: (T.Protocol p, T.Transport t) => p t -> Mkdirs_args -> P.IO ()
 write_Mkdirs_args oprot record = T.writeVal oprot $ from_Mkdirs_args record
@@ -895,7 +968,7 @@ encode_Mkdirs_args :: (T.Protocol p, T.Transport t) => p t -> Mkdirs_args -> LBS
 encode_Mkdirs_args oprot record = T.serializeVal oprot $ from_Mkdirs_args record
 to_Mkdirs_args :: T.ThriftVal -> Mkdirs_args
 to_Mkdirs_args (T.TStruct fields) = Mkdirs_args{
-  mkdirs_args_path = P.maybe (mkdirs_args_path default_Mkdirs_args) (\(_,_val208) -> (case _val208 of {T.TStruct _val209 -> (to_Pathname (T.TStruct _val209)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  mkdirs_args_path = P.maybe (mkdirs_args_path default_Mkdirs_args) (\(_,_val221) -> (case _val221 of {T.TStruct _val222 -> (to_Pathname (T.TStruct _val222)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Mkdirs_args _ = P.error "not a struct"
 read_Mkdirs_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Mkdirs_args
@@ -922,10 +995,10 @@ instance QC.Arbitrary Mkdirs_result where
     ]
 from_Mkdirs_result :: Mkdirs_result -> T.ThriftVal
 from_Mkdirs_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v212 -> (1, ("ouch",from_ThriftIOException _v212))) <$> mkdirs_result_ouch record]
+  (let exns = M.catMaybes [ (\_v225 -> (1, ("ouch",from_ThriftIOException _v225))) <$> mkdirs_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v212 -> P.Just (0, ("success",T.TBool _v212))) $ mkdirs_result_success record
-    , (\_v212 -> (1, ("ouch",from_ThriftIOException _v212))) <$> mkdirs_result_ouch record
+    [ (\_v225 -> P.Just (0, ("success",T.TBool _v225))) $ mkdirs_result_success record
+    , (\_v225 -> (1, ("ouch",from_ThriftIOException _v225))) <$> mkdirs_result_ouch record
     ]
     )
 write_Mkdirs_result :: (T.Protocol p, T.Transport t) => p t -> Mkdirs_result -> P.IO ()
@@ -934,8 +1007,8 @@ encode_Mkdirs_result :: (T.Protocol p, T.Transport t) => p t -> Mkdirs_result ->
 encode_Mkdirs_result oprot record = T.serializeVal oprot $ from_Mkdirs_result record
 to_Mkdirs_result :: T.ThriftVal -> Mkdirs_result
 to_Mkdirs_result (T.TStruct fields) = Mkdirs_result{
-  mkdirs_result_success = P.maybe (mkdirs_result_success default_Mkdirs_result) (\(_,_val214) -> (case _val214 of {T.TBool _val215 -> _val215; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  mkdirs_result_ouch = P.maybe (P.Nothing) (\(_,_val214) -> P.Just (case _val214 of {T.TStruct _val216 -> (to_ThriftIOException (T.TStruct _val216)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  mkdirs_result_success = P.maybe (mkdirs_result_success default_Mkdirs_result) (\(_,_val227) -> (case _val227 of {T.TBool _val228 -> _val228; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  mkdirs_result_ouch = P.maybe (P.Nothing) (\(_,_val227) -> P.Just (case _val227 of {T.TStruct _val229 -> (to_ThriftIOException (T.TStruct _val229)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Mkdirs_result _ = P.error "not a struct"
 read_Mkdirs_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Mkdirs_result
@@ -960,7 +1033,7 @@ instance QC.Arbitrary Exists_args where
     ]
 from_Exists_args :: Exists_args -> T.ThriftVal
 from_Exists_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v219 -> P.Just (1, ("path",from_Pathname _v219))) $ exists_args_path record
+  [ (\_v232 -> P.Just (1, ("path",from_Pathname _v232))) $ exists_args_path record
   ]
 write_Exists_args :: (T.Protocol p, T.Transport t) => p t -> Exists_args -> P.IO ()
 write_Exists_args oprot record = T.writeVal oprot $ from_Exists_args record
@@ -968,7 +1041,7 @@ encode_Exists_args :: (T.Protocol p, T.Transport t) => p t -> Exists_args -> LBS
 encode_Exists_args oprot record = T.serializeVal oprot $ from_Exists_args record
 to_Exists_args :: T.ThriftVal -> Exists_args
 to_Exists_args (T.TStruct fields) = Exists_args{
-  exists_args_path = P.maybe (exists_args_path default_Exists_args) (\(_,_val221) -> (case _val221 of {T.TStruct _val222 -> (to_Pathname (T.TStruct _val222)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  exists_args_path = P.maybe (exists_args_path default_Exists_args) (\(_,_val234) -> (case _val234 of {T.TStruct _val235 -> (to_Pathname (T.TStruct _val235)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Exists_args _ = P.error "not a struct"
 read_Exists_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Exists_args
@@ -995,10 +1068,10 @@ instance QC.Arbitrary Exists_result where
     ]
 from_Exists_result :: Exists_result -> T.ThriftVal
 from_Exists_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v225 -> (1, ("ouch",from_ThriftIOException _v225))) <$> exists_result_ouch record]
+  (let exns = M.catMaybes [ (\_v238 -> (1, ("ouch",from_ThriftIOException _v238))) <$> exists_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v225 -> P.Just (0, ("success",T.TBool _v225))) $ exists_result_success record
-    , (\_v225 -> (1, ("ouch",from_ThriftIOException _v225))) <$> exists_result_ouch record
+    [ (\_v238 -> P.Just (0, ("success",T.TBool _v238))) $ exists_result_success record
+    , (\_v238 -> (1, ("ouch",from_ThriftIOException _v238))) <$> exists_result_ouch record
     ]
     )
 write_Exists_result :: (T.Protocol p, T.Transport t) => p t -> Exists_result -> P.IO ()
@@ -1007,8 +1080,8 @@ encode_Exists_result :: (T.Protocol p, T.Transport t) => p t -> Exists_result ->
 encode_Exists_result oprot record = T.serializeVal oprot $ from_Exists_result record
 to_Exists_result :: T.ThriftVal -> Exists_result
 to_Exists_result (T.TStruct fields) = Exists_result{
-  exists_result_success = P.maybe (exists_result_success default_Exists_result) (\(_,_val227) -> (case _val227 of {T.TBool _val228 -> _val228; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  exists_result_ouch = P.maybe (P.Nothing) (\(_,_val227) -> P.Just (case _val227 of {T.TStruct _val229 -> (to_ThriftIOException (T.TStruct _val229)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  exists_result_success = P.maybe (exists_result_success default_Exists_result) (\(_,_val240) -> (case _val240 of {T.TBool _val241 -> _val241; _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  exists_result_ouch = P.maybe (P.Nothing) (\(_,_val240) -> P.Just (case _val240 of {T.TStruct _val242 -> (to_ThriftIOException (T.TStruct _val242)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Exists_result _ = P.error "not a struct"
 read_Exists_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Exists_result
@@ -1033,7 +1106,7 @@ instance QC.Arbitrary Stat_args where
     ]
 from_Stat_args :: Stat_args -> T.ThriftVal
 from_Stat_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v232 -> P.Just (1, ("path",from_Pathname _v232))) $ stat_args_path record
+  [ (\_v245 -> P.Just (1, ("path",from_Pathname _v245))) $ stat_args_path record
   ]
 write_Stat_args :: (T.Protocol p, T.Transport t) => p t -> Stat_args -> P.IO ()
 write_Stat_args oprot record = T.writeVal oprot $ from_Stat_args record
@@ -1041,7 +1114,7 @@ encode_Stat_args :: (T.Protocol p, T.Transport t) => p t -> Stat_args -> LBS.Byt
 encode_Stat_args oprot record = T.serializeVal oprot $ from_Stat_args record
 to_Stat_args :: T.ThriftVal -> Stat_args
 to_Stat_args (T.TStruct fields) = Stat_args{
-  stat_args_path = P.maybe (stat_args_path default_Stat_args) (\(_,_val234) -> (case _val234 of {T.TStruct _val235 -> (to_Pathname (T.TStruct _val235)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  stat_args_path = P.maybe (stat_args_path default_Stat_args) (\(_,_val247) -> (case _val247 of {T.TStruct _val248 -> (to_Pathname (T.TStruct _val248)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Stat_args _ = P.error "not a struct"
 read_Stat_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Stat_args
@@ -1068,10 +1141,10 @@ instance QC.Arbitrary Stat_result where
     ]
 from_Stat_result :: Stat_result -> T.ThriftVal
 from_Stat_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v238 -> (1, ("ouch",from_ThriftIOException _v238))) <$> stat_result_ouch record]
+  (let exns = M.catMaybes [ (\_v251 -> (1, ("ouch",from_ThriftIOException _v251))) <$> stat_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v238 -> P.Just (0, ("success",from_FileStatus _v238))) $ stat_result_success record
-    , (\_v238 -> (1, ("ouch",from_ThriftIOException _v238))) <$> stat_result_ouch record
+    [ (\_v251 -> P.Just (0, ("success",from_FileStatus _v251))) $ stat_result_success record
+    , (\_v251 -> (1, ("ouch",from_ThriftIOException _v251))) <$> stat_result_ouch record
     ]
     )
 write_Stat_result :: (T.Protocol p, T.Transport t) => p t -> Stat_result -> P.IO ()
@@ -1080,8 +1153,8 @@ encode_Stat_result :: (T.Protocol p, T.Transport t) => p t -> Stat_result -> LBS
 encode_Stat_result oprot record = T.serializeVal oprot $ from_Stat_result record
 to_Stat_result :: T.ThriftVal -> Stat_result
 to_Stat_result (T.TStruct fields) = Stat_result{
-  stat_result_success = P.maybe (stat_result_success default_Stat_result) (\(_,_val240) -> (case _val240 of {T.TStruct _val241 -> (to_FileStatus (T.TStruct _val241)); _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  stat_result_ouch = P.maybe (P.Nothing) (\(_,_val240) -> P.Just (case _val240 of {T.TStruct _val242 -> (to_ThriftIOException (T.TStruct _val242)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  stat_result_success = P.maybe (stat_result_success default_Stat_result) (\(_,_val253) -> (case _val253 of {T.TStruct _val254 -> (to_FileStatus (T.TStruct _val254)); _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  stat_result_ouch = P.maybe (P.Nothing) (\(_,_val253) -> P.Just (case _val253 of {T.TStruct _val255 -> (to_ThriftIOException (T.TStruct _val255)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Stat_result _ = P.error "not a struct"
 read_Stat_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Stat_result
@@ -1106,7 +1179,7 @@ instance QC.Arbitrary ListStatus_args where
     ]
 from_ListStatus_args :: ListStatus_args -> T.ThriftVal
 from_ListStatus_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v245 -> P.Just (1, ("path",from_Pathname _v245))) $ listStatus_args_path record
+  [ (\_v258 -> P.Just (1, ("path",from_Pathname _v258))) $ listStatus_args_path record
   ]
 write_ListStatus_args :: (T.Protocol p, T.Transport t) => p t -> ListStatus_args -> P.IO ()
 write_ListStatus_args oprot record = T.writeVal oprot $ from_ListStatus_args record
@@ -1114,7 +1187,7 @@ encode_ListStatus_args :: (T.Protocol p, T.Transport t) => p t -> ListStatus_arg
 encode_ListStatus_args oprot record = T.serializeVal oprot $ from_ListStatus_args record
 to_ListStatus_args :: T.ThriftVal -> ListStatus_args
 to_ListStatus_args (T.TStruct fields) = ListStatus_args{
-  listStatus_args_path = P.maybe (listStatus_args_path default_ListStatus_args) (\(_,_val247) -> (case _val247 of {T.TStruct _val248 -> (to_Pathname (T.TStruct _val248)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  listStatus_args_path = P.maybe (listStatus_args_path default_ListStatus_args) (\(_,_val260) -> (case _val260 of {T.TStruct _val261 -> (to_Pathname (T.TStruct _val261)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_ListStatus_args _ = P.error "not a struct"
 read_ListStatus_args :: (T.Transport t, T.Protocol p) => p t -> P.IO ListStatus_args
@@ -1141,10 +1214,10 @@ instance QC.Arbitrary ListStatus_result where
     ]
 from_ListStatus_result :: ListStatus_result -> T.ThriftVal
 from_ListStatus_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v251 -> (1, ("ouch",from_ThriftIOException _v251))) <$> listStatus_result_ouch record]
+  (let exns = M.catMaybes [ (\_v264 -> (1, ("ouch",from_ThriftIOException _v264))) <$> listStatus_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v251 -> P.Just (0, ("success",T.TList (T.T_STRUCT typemap_FileStatus) $ P.map (\_v253 -> from_FileStatus _v253) $ Vector.toList _v251))) $ listStatus_result_success record
-    , (\_v251 -> (1, ("ouch",from_ThriftIOException _v251))) <$> listStatus_result_ouch record
+    [ (\_v264 -> P.Just (0, ("success",T.TList (T.T_STRUCT typemap_FileStatus) $ P.map (\_v266 -> from_FileStatus _v266) $ Vector.toList _v264))) $ listStatus_result_success record
+    , (\_v264 -> (1, ("ouch",from_ThriftIOException _v264))) <$> listStatus_result_ouch record
     ]
     )
 write_ListStatus_result :: (T.Protocol p, T.Transport t) => p t -> ListStatus_result -> P.IO ()
@@ -1153,8 +1226,8 @@ encode_ListStatus_result :: (T.Protocol p, T.Transport t) => p t -> ListStatus_r
 encode_ListStatus_result oprot record = T.serializeVal oprot $ from_ListStatus_result record
 to_ListStatus_result :: T.ThriftVal -> ListStatus_result
 to_ListStatus_result (T.TStruct fields) = ListStatus_result{
-  listStatus_result_success = P.maybe (listStatus_result_success default_ListStatus_result) (\(_,_val255) -> (case _val255 of {T.TList _ _val256 -> (Vector.fromList $ P.map (\_v257 -> (case _v257 of {T.TStruct _val258 -> (to_FileStatus (T.TStruct _val258)); _ -> P.error "wrong type"})) _val256); _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  listStatus_result_ouch = P.maybe (P.Nothing) (\(_,_val255) -> P.Just (case _val255 of {T.TStruct _val259 -> (to_ThriftIOException (T.TStruct _val259)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  listStatus_result_success = P.maybe (listStatus_result_success default_ListStatus_result) (\(_,_val268) -> (case _val268 of {T.TList _ _val269 -> (Vector.fromList $ P.map (\_v270 -> (case _v270 of {T.TStruct _val271 -> (to_FileStatus (T.TStruct _val271)); _ -> P.error "wrong type"})) _val269); _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  listStatus_result_ouch = P.maybe (P.Nothing) (\(_,_val268) -> P.Just (case _val268 of {T.TStruct _val272 -> (to_ThriftIOException (T.TStruct _val272)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_ListStatus_result _ = P.error "not a struct"
 read_ListStatus_result :: (T.Transport t, T.Protocol p) => p t -> P.IO ListStatus_result
@@ -1182,8 +1255,8 @@ instance QC.Arbitrary Chmod_args where
     ]
 from_Chmod_args :: Chmod_args -> T.ThriftVal
 from_Chmod_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v262 -> P.Just (1, ("path",from_Pathname _v262))) $ chmod_args_path record
-  , (\_v262 -> P.Just (2, ("mode",T.TI16 _v262))) $ chmod_args_mode record
+  [ (\_v275 -> P.Just (1, ("path",from_Pathname _v275))) $ chmod_args_path record
+  , (\_v275 -> P.Just (2, ("mode",T.TI16 _v275))) $ chmod_args_mode record
   ]
 write_Chmod_args :: (T.Protocol p, T.Transport t) => p t -> Chmod_args -> P.IO ()
 write_Chmod_args oprot record = T.writeVal oprot $ from_Chmod_args record
@@ -1191,8 +1264,8 @@ encode_Chmod_args :: (T.Protocol p, T.Transport t) => p t -> Chmod_args -> LBS.B
 encode_Chmod_args oprot record = T.serializeVal oprot $ from_Chmod_args record
 to_Chmod_args :: T.ThriftVal -> Chmod_args
 to_Chmod_args (T.TStruct fields) = Chmod_args{
-  chmod_args_path = P.maybe (chmod_args_path default_Chmod_args) (\(_,_val264) -> (case _val264 of {T.TStruct _val265 -> (to_Pathname (T.TStruct _val265)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
-  chmod_args_mode = P.maybe (chmod_args_mode default_Chmod_args) (\(_,_val264) -> (case _val264 of {T.TI16 _val266 -> _val266; _ -> P.error "wrong type"})) (Map.lookup (2) fields)
+  chmod_args_path = P.maybe (chmod_args_path default_Chmod_args) (\(_,_val277) -> (case _val277 of {T.TStruct _val278 -> (to_Pathname (T.TStruct _val278)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
+  chmod_args_mode = P.maybe (chmod_args_mode default_Chmod_args) (\(_,_val277) -> (case _val277 of {T.TI16 _val279 -> _val279; _ -> P.error "wrong type"})) (Map.lookup (2) fields)
   }
 to_Chmod_args _ = P.error "not a struct"
 read_Chmod_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Chmod_args
@@ -1217,9 +1290,9 @@ instance QC.Arbitrary Chmod_result where
     ]
 from_Chmod_result :: Chmod_result -> T.ThriftVal
 from_Chmod_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v269 -> (1, ("ouch",from_ThriftIOException _v269))) <$> chmod_result_ouch record]
+  (let exns = M.catMaybes [ (\_v282 -> (1, ("ouch",from_ThriftIOException _v282))) <$> chmod_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v269 -> (1, ("ouch",from_ThriftIOException _v269))) <$> chmod_result_ouch record
+    [ (\_v282 -> (1, ("ouch",from_ThriftIOException _v282))) <$> chmod_result_ouch record
     ]
     )
 write_Chmod_result :: (T.Protocol p, T.Transport t) => p t -> Chmod_result -> P.IO ()
@@ -1228,7 +1301,7 @@ encode_Chmod_result :: (T.Protocol p, T.Transport t) => p t -> Chmod_result -> L
 encode_Chmod_result oprot record = T.serializeVal oprot $ from_Chmod_result record
 to_Chmod_result :: T.ThriftVal -> Chmod_result
 to_Chmod_result (T.TStruct fields) = Chmod_result{
-  chmod_result_ouch = P.maybe (P.Nothing) (\(_,_val271) -> P.Just (case _val271 of {T.TStruct _val272 -> (to_ThriftIOException (T.TStruct _val272)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  chmod_result_ouch = P.maybe (P.Nothing) (\(_,_val284) -> P.Just (case _val284 of {T.TStruct _val285 -> (to_ThriftIOException (T.TStruct _val285)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Chmod_result _ = P.error "not a struct"
 read_Chmod_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Chmod_result
@@ -1258,9 +1331,9 @@ instance QC.Arbitrary Chown_args where
     ]
 from_Chown_args :: Chown_args -> T.ThriftVal
 from_Chown_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v275 -> P.Just (1, ("path",from_Pathname _v275))) $ chown_args_path record
-  , (\_v275 -> P.Just (2, ("owner",T.TString $ E.encodeUtf8 _v275))) $ chown_args_owner record
-  , (\_v275 -> P.Just (3, ("group",T.TString $ E.encodeUtf8 _v275))) $ chown_args_group record
+  [ (\_v288 -> P.Just (1, ("path",from_Pathname _v288))) $ chown_args_path record
+  , (\_v288 -> P.Just (2, ("owner",T.TString $ E.encodeUtf8 _v288))) $ chown_args_owner record
+  , (\_v288 -> P.Just (3, ("group",T.TString $ E.encodeUtf8 _v288))) $ chown_args_group record
   ]
 write_Chown_args :: (T.Protocol p, T.Transport t) => p t -> Chown_args -> P.IO ()
 write_Chown_args oprot record = T.writeVal oprot $ from_Chown_args record
@@ -1268,9 +1341,9 @@ encode_Chown_args :: (T.Protocol p, T.Transport t) => p t -> Chown_args -> LBS.B
 encode_Chown_args oprot record = T.serializeVal oprot $ from_Chown_args record
 to_Chown_args :: T.ThriftVal -> Chown_args
 to_Chown_args (T.TStruct fields) = Chown_args{
-  chown_args_path = P.maybe (chown_args_path default_Chown_args) (\(_,_val277) -> (case _val277 of {T.TStruct _val278 -> (to_Pathname (T.TStruct _val278)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
-  chown_args_owner = P.maybe (chown_args_owner default_Chown_args) (\(_,_val277) -> (case _val277 of {T.TString _val279 -> E.decodeUtf8 _val279; _ -> P.error "wrong type"})) (Map.lookup (2) fields),
-  chown_args_group = P.maybe (chown_args_group default_Chown_args) (\(_,_val277) -> (case _val277 of {T.TString _val280 -> E.decodeUtf8 _val280; _ -> P.error "wrong type"})) (Map.lookup (3) fields)
+  chown_args_path = P.maybe (chown_args_path default_Chown_args) (\(_,_val290) -> (case _val290 of {T.TStruct _val291 -> (to_Pathname (T.TStruct _val291)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
+  chown_args_owner = P.maybe (chown_args_owner default_Chown_args) (\(_,_val290) -> (case _val290 of {T.TString _val292 -> E.decodeUtf8 _val292; _ -> P.error "wrong type"})) (Map.lookup (2) fields),
+  chown_args_group = P.maybe (chown_args_group default_Chown_args) (\(_,_val290) -> (case _val290 of {T.TString _val293 -> E.decodeUtf8 _val293; _ -> P.error "wrong type"})) (Map.lookup (3) fields)
   }
 to_Chown_args _ = P.error "not a struct"
 read_Chown_args :: (T.Transport t, T.Protocol p) => p t -> P.IO Chown_args
@@ -1296,9 +1369,9 @@ instance QC.Arbitrary Chown_result where
     ]
 from_Chown_result :: Chown_result -> T.ThriftVal
 from_Chown_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v283 -> (1, ("ouch",from_ThriftIOException _v283))) <$> chown_result_ouch record]
+  (let exns = M.catMaybes [ (\_v296 -> (1, ("ouch",from_ThriftIOException _v296))) <$> chown_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v283 -> (1, ("ouch",from_ThriftIOException _v283))) <$> chown_result_ouch record
+    [ (\_v296 -> (1, ("ouch",from_ThriftIOException _v296))) <$> chown_result_ouch record
     ]
     )
 write_Chown_result :: (T.Protocol p, T.Transport t) => p t -> Chown_result -> P.IO ()
@@ -1307,7 +1380,7 @@ encode_Chown_result :: (T.Protocol p, T.Transport t) => p t -> Chown_result -> L
 encode_Chown_result oprot record = T.serializeVal oprot $ from_Chown_result record
 to_Chown_result :: T.ThriftVal -> Chown_result
 to_Chown_result (T.TStruct fields) = Chown_result{
-  chown_result_ouch = P.maybe (P.Nothing) (\(_,_val285) -> P.Just (case _val285 of {T.TStruct _val286 -> (to_ThriftIOException (T.TStruct _val286)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  chown_result_ouch = P.maybe (P.Nothing) (\(_,_val298) -> P.Just (case _val298 of {T.TStruct _val299 -> (to_ThriftIOException (T.TStruct _val299)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_Chown_result _ = P.error "not a struct"
 read_Chown_result :: (T.Transport t, T.Protocol p) => p t -> P.IO Chown_result
@@ -1334,8 +1407,8 @@ instance QC.Arbitrary SetReplication_args where
     ]
 from_SetReplication_args :: SetReplication_args -> T.ThriftVal
 from_SetReplication_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v289 -> P.Just (1, ("path",from_Pathname _v289))) $ setReplication_args_path record
-  , (\_v289 -> P.Just (2, ("replication",T.TI16 _v289))) $ setReplication_args_replication record
+  [ (\_v302 -> P.Just (1, ("path",from_Pathname _v302))) $ setReplication_args_path record
+  , (\_v302 -> P.Just (2, ("replication",T.TI16 _v302))) $ setReplication_args_replication record
   ]
 write_SetReplication_args :: (T.Protocol p, T.Transport t) => p t -> SetReplication_args -> P.IO ()
 write_SetReplication_args oprot record = T.writeVal oprot $ from_SetReplication_args record
@@ -1343,8 +1416,8 @@ encode_SetReplication_args :: (T.Protocol p, T.Transport t) => p t -> SetReplica
 encode_SetReplication_args oprot record = T.serializeVal oprot $ from_SetReplication_args record
 to_SetReplication_args :: T.ThriftVal -> SetReplication_args
 to_SetReplication_args (T.TStruct fields) = SetReplication_args{
-  setReplication_args_path = P.maybe (setReplication_args_path default_SetReplication_args) (\(_,_val291) -> (case _val291 of {T.TStruct _val292 -> (to_Pathname (T.TStruct _val292)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
-  setReplication_args_replication = P.maybe (setReplication_args_replication default_SetReplication_args) (\(_,_val291) -> (case _val291 of {T.TI16 _val293 -> _val293; _ -> P.error "wrong type"})) (Map.lookup (2) fields)
+  setReplication_args_path = P.maybe (setReplication_args_path default_SetReplication_args) (\(_,_val304) -> (case _val304 of {T.TStruct _val305 -> (to_Pathname (T.TStruct _val305)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
+  setReplication_args_replication = P.maybe (setReplication_args_replication default_SetReplication_args) (\(_,_val304) -> (case _val304 of {T.TI16 _val306 -> _val306; _ -> P.error "wrong type"})) (Map.lookup (2) fields)
   }
 to_SetReplication_args _ = P.error "not a struct"
 read_SetReplication_args :: (T.Transport t, T.Protocol p) => p t -> P.IO SetReplication_args
@@ -1369,9 +1442,9 @@ instance QC.Arbitrary SetReplication_result where
     ]
 from_SetReplication_result :: SetReplication_result -> T.ThriftVal
 from_SetReplication_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v296 -> (1, ("ouch",from_ThriftIOException _v296))) <$> setReplication_result_ouch record]
+  (let exns = M.catMaybes [ (\_v309 -> (1, ("ouch",from_ThriftIOException _v309))) <$> setReplication_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v296 -> (1, ("ouch",from_ThriftIOException _v296))) <$> setReplication_result_ouch record
+    [ (\_v309 -> (1, ("ouch",from_ThriftIOException _v309))) <$> setReplication_result_ouch record
     ]
     )
 write_SetReplication_result :: (T.Protocol p, T.Transport t) => p t -> SetReplication_result -> P.IO ()
@@ -1380,7 +1453,7 @@ encode_SetReplication_result :: (T.Protocol p, T.Transport t) => p t -> SetRepli
 encode_SetReplication_result oprot record = T.serializeVal oprot $ from_SetReplication_result record
 to_SetReplication_result :: T.ThriftVal -> SetReplication_result
 to_SetReplication_result (T.TStruct fields) = SetReplication_result{
-  setReplication_result_ouch = P.maybe (P.Nothing) (\(_,_val298) -> P.Just (case _val298 of {T.TStruct _val299 -> (to_ThriftIOException (T.TStruct _val299)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  setReplication_result_ouch = P.maybe (P.Nothing) (\(_,_val311) -> P.Just (case _val311 of {T.TStruct _val312 -> (to_ThriftIOException (T.TStruct _val312)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_SetReplication_result _ = P.error "not a struct"
 read_SetReplication_result :: (T.Transport t, T.Protocol p) => p t -> P.IO SetReplication_result
@@ -1410,9 +1483,9 @@ instance QC.Arbitrary GetFileBlockLocations_args where
     ]
 from_GetFileBlockLocations_args :: GetFileBlockLocations_args -> T.ThriftVal
 from_GetFileBlockLocations_args record = T.TStruct $ Map.fromList $ M.catMaybes
-  [ (\_v302 -> P.Just (1, ("path",from_Pathname _v302))) $ getFileBlockLocations_args_path record
-  , (\_v302 -> P.Just (2, ("start",T.TI64 _v302))) $ getFileBlockLocations_args_start record
-  , (\_v302 -> P.Just (3, ("length",T.TI64 _v302))) $ getFileBlockLocations_args_length record
+  [ (\_v315 -> P.Just (1, ("path",from_Pathname _v315))) $ getFileBlockLocations_args_path record
+  , (\_v315 -> P.Just (2, ("start",T.TI64 _v315))) $ getFileBlockLocations_args_start record
+  , (\_v315 -> P.Just (3, ("length",T.TI64 _v315))) $ getFileBlockLocations_args_length record
   ]
 write_GetFileBlockLocations_args :: (T.Protocol p, T.Transport t) => p t -> GetFileBlockLocations_args -> P.IO ()
 write_GetFileBlockLocations_args oprot record = T.writeVal oprot $ from_GetFileBlockLocations_args record
@@ -1420,9 +1493,9 @@ encode_GetFileBlockLocations_args :: (T.Protocol p, T.Transport t) => p t -> Get
 encode_GetFileBlockLocations_args oprot record = T.serializeVal oprot $ from_GetFileBlockLocations_args record
 to_GetFileBlockLocations_args :: T.ThriftVal -> GetFileBlockLocations_args
 to_GetFileBlockLocations_args (T.TStruct fields) = GetFileBlockLocations_args{
-  getFileBlockLocations_args_path = P.maybe (getFileBlockLocations_args_path default_GetFileBlockLocations_args) (\(_,_val304) -> (case _val304 of {T.TStruct _val305 -> (to_Pathname (T.TStruct _val305)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
-  getFileBlockLocations_args_start = P.maybe (getFileBlockLocations_args_start default_GetFileBlockLocations_args) (\(_,_val304) -> (case _val304 of {T.TI64 _val306 -> _val306; _ -> P.error "wrong type"})) (Map.lookup (2) fields),
-  getFileBlockLocations_args_length = P.maybe (getFileBlockLocations_args_length default_GetFileBlockLocations_args) (\(_,_val304) -> (case _val304 of {T.TI64 _val307 -> _val307; _ -> P.error "wrong type"})) (Map.lookup (3) fields)
+  getFileBlockLocations_args_path = P.maybe (getFileBlockLocations_args_path default_GetFileBlockLocations_args) (\(_,_val317) -> (case _val317 of {T.TStruct _val318 -> (to_Pathname (T.TStruct _val318)); _ -> P.error "wrong type"})) (Map.lookup (1) fields),
+  getFileBlockLocations_args_start = P.maybe (getFileBlockLocations_args_start default_GetFileBlockLocations_args) (\(_,_val317) -> (case _val317 of {T.TI64 _val319 -> _val319; _ -> P.error "wrong type"})) (Map.lookup (2) fields),
+  getFileBlockLocations_args_length = P.maybe (getFileBlockLocations_args_length default_GetFileBlockLocations_args) (\(_,_val317) -> (case _val317 of {T.TI64 _val320 -> _val320; _ -> P.error "wrong type"})) (Map.lookup (3) fields)
   }
 to_GetFileBlockLocations_args _ = P.error "not a struct"
 read_GetFileBlockLocations_args :: (T.Transport t, T.Protocol p) => p t -> P.IO GetFileBlockLocations_args
@@ -1451,10 +1524,10 @@ instance QC.Arbitrary GetFileBlockLocations_result where
     ]
 from_GetFileBlockLocations_result :: GetFileBlockLocations_result -> T.ThriftVal
 from_GetFileBlockLocations_result record = T.TStruct $ Map.fromList 
-  (let exns = M.catMaybes [ (\_v310 -> (1, ("ouch",from_ThriftIOException _v310))) <$> getFileBlockLocations_result_ouch record]
+  (let exns = M.catMaybes [ (\_v323 -> (1, ("ouch",from_ThriftIOException _v323))) <$> getFileBlockLocations_result_ouch record]
   in if P.not (P.null exns) then exns else M.catMaybes
-    [ (\_v310 -> P.Just (0, ("success",T.TList (T.T_STRUCT typemap_BlockLocation) $ P.map (\_v312 -> from_BlockLocation _v312) $ Vector.toList _v310))) $ getFileBlockLocations_result_success record
-    , (\_v310 -> (1, ("ouch",from_ThriftIOException _v310))) <$> getFileBlockLocations_result_ouch record
+    [ (\_v323 -> P.Just (0, ("success",T.TList (T.T_STRUCT typemap_BlockLocation) $ P.map (\_v325 -> from_BlockLocation _v325) $ Vector.toList _v323))) $ getFileBlockLocations_result_success record
+    , (\_v323 -> (1, ("ouch",from_ThriftIOException _v323))) <$> getFileBlockLocations_result_ouch record
     ]
     )
 write_GetFileBlockLocations_result :: (T.Protocol p, T.Transport t) => p t -> GetFileBlockLocations_result -> P.IO ()
@@ -1463,8 +1536,8 @@ encode_GetFileBlockLocations_result :: (T.Protocol p, T.Transport t) => p t -> G
 encode_GetFileBlockLocations_result oprot record = T.serializeVal oprot $ from_GetFileBlockLocations_result record
 to_GetFileBlockLocations_result :: T.ThriftVal -> GetFileBlockLocations_result
 to_GetFileBlockLocations_result (T.TStruct fields) = GetFileBlockLocations_result{
-  getFileBlockLocations_result_success = P.maybe (getFileBlockLocations_result_success default_GetFileBlockLocations_result) (\(_,_val314) -> (case _val314 of {T.TList _ _val315 -> (Vector.fromList $ P.map (\_v316 -> (case _v316 of {T.TStruct _val317 -> (to_BlockLocation (T.TStruct _val317)); _ -> P.error "wrong type"})) _val315); _ -> P.error "wrong type"})) (Map.lookup (0) fields),
-  getFileBlockLocations_result_ouch = P.maybe (P.Nothing) (\(_,_val314) -> P.Just (case _val314 of {T.TStruct _val318 -> (to_ThriftIOException (T.TStruct _val318)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
+  getFileBlockLocations_result_success = P.maybe (getFileBlockLocations_result_success default_GetFileBlockLocations_result) (\(_,_val327) -> (case _val327 of {T.TList _ _val328 -> (Vector.fromList $ P.map (\_v329 -> (case _v329 of {T.TStruct _val330 -> (to_BlockLocation (T.TStruct _val330)); _ -> P.error "wrong type"})) _val328); _ -> P.error "wrong type"})) (Map.lookup (0) fields),
+  getFileBlockLocations_result_ouch = P.maybe (P.Nothing) (\(_,_val327) -> P.Just (case _val327 of {T.TStruct _val331 -> (to_ThriftIOException (T.TStruct _val331)); _ -> P.error "wrong type"})) (Map.lookup (1) fields)
   }
 to_GetFileBlockLocations_result _ = P.error "not a struct"
 read_GetFileBlockLocations_result :: (T.Transport t, T.Protocol p) => p t -> P.IO GetFileBlockLocations_result
@@ -1639,25 +1712,47 @@ process_read (seqid, iprot, oprot, handler) = do
       T.writeAppExn oprot (T.AppExn T.AE_UNKNOWN "")
       T.writeMessageEnd oprot
       T.tFlush (T.getTransport oprot)) :: X.SomeException -> P.IO ()))
-process_close (seqid, iprot, oprot, handler) = do
-  args <- read_Close_args iprot
+process_closeReadHandle (seqid, iprot, oprot, handler) = do
+  args <- read_CloseReadHandle_args iprot
   (X.catch
     (X.catch
       (do
-        val <- Iface.close handler (close_args_out args)
-        let res = default_Close_result{close_result_success = val}
-        T.writeMessageBegin oprot ("close", T.M_REPLY, seqid)
-        write_Close_result oprot res
+        val <- Iface.closeReadHandle handler (closeReadHandle_args_out args)
+        let res = default_CloseReadHandle_result{closeReadHandle_result_success = val}
+        T.writeMessageBegin oprot ("closeReadHandle", T.M_REPLY, seqid)
+        write_CloseReadHandle_result oprot res
         T.writeMessageEnd oprot
         T.tFlush (T.getTransport oprot))
       (\e  -> do
-        let res = default_Close_result{close_result_ouch = P.Just e}
-        T.writeMessageBegin oprot ("close", T.M_REPLY, seqid)
-        write_Close_result oprot res
+        let res = default_CloseReadHandle_result{closeReadHandle_result_ouch = P.Just e}
+        T.writeMessageBegin oprot ("closeReadHandle", T.M_REPLY, seqid)
+        write_CloseReadHandle_result oprot res
         T.writeMessageEnd oprot
         T.tFlush (T.getTransport oprot)))
     ((\_ -> do
-      T.writeMessageBegin oprot ("close", T.M_EXCEPTION, seqid)
+      T.writeMessageBegin oprot ("closeReadHandle", T.M_EXCEPTION, seqid)
+      T.writeAppExn oprot (T.AppExn T.AE_UNKNOWN "")
+      T.writeMessageEnd oprot
+      T.tFlush (T.getTransport oprot)) :: X.SomeException -> P.IO ()))
+process_closeWriteHandle (seqid, iprot, oprot, handler) = do
+  args <- read_CloseWriteHandle_args iprot
+  (X.catch
+    (X.catch
+      (do
+        val <- Iface.closeWriteHandle handler (closeWriteHandle_args_out args)
+        let res = default_CloseWriteHandle_result{closeWriteHandle_result_success = val}
+        T.writeMessageBegin oprot ("closeWriteHandle", T.M_REPLY, seqid)
+        write_CloseWriteHandle_result oprot res
+        T.writeMessageEnd oprot
+        T.tFlush (T.getTransport oprot))
+      (\e  -> do
+        let res = default_CloseWriteHandle_result{closeWriteHandle_result_ouch = P.Just e}
+        T.writeMessageBegin oprot ("closeWriteHandle", T.M_REPLY, seqid)
+        write_CloseWriteHandle_result oprot res
+        T.writeMessageEnd oprot
+        T.tFlush (T.getTransport oprot)))
+    ((\_ -> do
+      T.writeMessageBegin oprot ("closeWriteHandle", T.M_EXCEPTION, seqid)
       T.writeAppExn oprot (T.AppExn T.AE_UNKNOWN "")
       T.writeMessageEnd oprot
       T.tFlush (T.getTransport oprot)) :: X.SomeException -> P.IO ()))
@@ -1890,7 +1985,8 @@ proc_ handler (iprot,oprot) (name,typ,seqid) = case name of
   "append" -> process_append (seqid,iprot,oprot,handler)
   "write" -> process_write (seqid,iprot,oprot,handler)
   "read" -> process_read (seqid,iprot,oprot,handler)
-  "close" -> process_close (seqid,iprot,oprot,handler)
+  "closeReadHandle" -> process_closeReadHandle (seqid,iprot,oprot,handler)
+  "closeWriteHandle" -> process_closeWriteHandle (seqid,iprot,oprot,handler)
   "rm" -> process_rm (seqid,iprot,oprot,handler)
   "rename" -> process_rename (seqid,iprot,oprot,handler)
   "mkdirs" -> process_mkdirs (seqid,iprot,oprot,handler)
