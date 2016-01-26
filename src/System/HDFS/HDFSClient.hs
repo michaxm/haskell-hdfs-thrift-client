@@ -1,6 +1,6 @@
 module System.HDFS.HDFSClient (
   Config,
-  hdfsListFiles,
+  hdfsListFiles, Location(_path),
   hdfsReadCompleteFile,
   hdfsFileBlockLocations, hdfsFileDistribution,
   hdfsWriteNewFile
@@ -19,20 +19,27 @@ import qualified Thrift.Transport as T
 import qualified Thrift.Transport.Handle as H
 import Thrift.Protocol.Binary (BinaryProtocol(..))
 
+import System.HDFS.InternalUtils
+
 type Config = (String, Int)
 type Path = String
+data Location = Location {
+  _protocolPart :: String,
+  _path :: Path
+  }
 
 {-|
  List file names at path. The HDFS will return full qualified file names including protocol, host and port.
- For simplicity, these can be used for opening files etc without stripping, however you should not try to
- construct these in the same form (just use a simple file path), since port and hostname are local knowledge
+ For simplicity, these can be used for opening files etc without stripping, but will access the referenced
+ host which is sometimes undesirable. Constructing the prototol part should not be done manually, since port and hostname are local knowledge
  of the thrift server, strictly speaking.
 |-}
-hdfsListFiles :: Config -> Path -> IO [String]
+hdfsListFiles :: Config -> Path -> IO [Location]
 hdfsListFiles config path = do
   putStrLn $ "looking at " ++ path
   res <- listStatus config path
-  return $ map (TL.unpack . Types.fileStatus_path) res
+  return $ map convertFileStatusToLocation res
+    where convertFileStatusToLocation = uncurry Location . splitLocation . TL.unpack . Types.fileStatus_path
 
 {-|
  Read file content of path
