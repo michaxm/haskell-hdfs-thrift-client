@@ -8,5 +8,6 @@ main = do
   args <- getArgs
   case args of
    ["ls", host, port, path] -> hdfsListFiles (host, read port) path >>= print
+   ["blockLocations", host, port, path] -> hdfsFileDistribution (host, read port) path >>= print
    ["readlen", host, port, path] -> hdfsReadCompleteFile (host, read port) path >>= return . TL.length >>= print
-   _ -> error "usage: <ls|readlen> <host> <port> <path>"
+   _ -> error "usage: <ls|blockLocations|readlen> <host> <port> <path>"
