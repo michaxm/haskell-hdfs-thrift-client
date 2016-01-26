@@ -26,7 +26,7 @@ type Path = String
 data Location = Location {
   _protocolPart :: String,
   _path :: Path
-  }
+  } deriving (Show)
 
 {-|
  List file names at path. The HDFS will return full qualified file names including protocol, host and port.

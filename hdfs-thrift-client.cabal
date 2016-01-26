@@ -27,6 +27,15 @@ library
   ghc-options:         -Wall -Werror
   default-language:    Haskell2010
 
+executable hdfs-tester
+  hs-source-dirs:      app
+  main-is:             HdfsTester.hs
+  other-modules:       
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , hdfs-thrift-client
+  default-language:    Haskell2010
+
 test-suite location-splitting
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
