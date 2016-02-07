@@ -1,3 +1,5 @@
+Warning: abandoned, obsolete. Although this approach works, it is slow and tedious compared to for example hadoop-rpc, which uses the Hadoop RPC API (protocol buffers) instead of Thrift. I switched to this completely.
+
 See https://github.com/michaxm/hdfs-thrift-bindings - this contains a Haskell client for that API.
 
 setup of the hs-thrift bindings:
